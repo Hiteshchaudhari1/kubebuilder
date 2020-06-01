@@ -27,6 +27,7 @@ import (
 	"sigs.k8s.io/kubebuilder/pkg/plugin/v2/scaffolds/templates"
 	"sigs.k8s.io/kubebuilder/pkg/plugin/v2/scaffolds/templates/controller"
 	"sigs.k8s.io/kubebuilder/pkg/plugin/v2/scaffolds/templates/crd"
+	templatesv3 "sigs.k8s.io/kubebuilder/pkg/plugin/v3/scaffolds/templates"
 )
 
 // (used only to gen api with --pattern=addon)
@@ -72,7 +73,7 @@ func (s *apiScaffolder) Scaffold() error {
 	fmt.Println("Writing scaffold for you to edit...")
 
 	switch {
-	case s.config.IsV2():
+	case s.config.IsV3():
 		return s.scaffold()
 	default:
 		return fmt.Errorf("unknown project version %v", s.config.Version)
@@ -126,7 +127,7 @@ func (s *apiScaffolder) scaffold() error {
 
 	if err := machinery.NewScaffold(s.plugins...).Execute(
 		s.newUniverse(),
-		&templates.MainUpdater{WireResource: s.doResource, WireController: s.doController},
+		&templatesv3.MainUpdater{WireResource: s.doResource, WireController: s.doController},
 	); err != nil {
 		return fmt.Errorf("error updating main.go: %v", err)
 	}

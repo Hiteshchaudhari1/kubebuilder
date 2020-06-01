@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package v2
+package v3
 
 import (
 	"sigs.k8s.io/kubebuilder/pkg/model/config"
@@ -24,8 +24,8 @@ import (
 const pluginName = "go" + plugin.DefaultNameQualifier
 
 var (
-	supportedProjectVersions = []string{config.Version2}
-	pluginVersion            = plugin.Version{Number: 2}
+	supportedProjectVersions = []string{config.Version3Alpha}
+	pluginVersion            = plugin.Version{Number: 3, Stage: plugin.AlphaStage}
 )
 
 var (

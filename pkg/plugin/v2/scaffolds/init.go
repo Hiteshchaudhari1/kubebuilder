@@ -25,12 +25,12 @@ import (
 	"sigs.k8s.io/kubebuilder/pkg/model/config"
 	"sigs.k8s.io/kubebuilder/pkg/plugin/internal/machinery"
 	"sigs.k8s.io/kubebuilder/pkg/plugin/scaffold"
-	"sigs.k8s.io/kubebuilder/pkg/plugin/v2/scaffolds/internal/templates"
-	"sigs.k8s.io/kubebuilder/pkg/plugin/v2/scaffolds/internal/templates/certmanager"
-	"sigs.k8s.io/kubebuilder/pkg/plugin/v2/scaffolds/internal/templates/manager"
-	"sigs.k8s.io/kubebuilder/pkg/plugin/v2/scaffolds/internal/templates/metricsauth"
-	"sigs.k8s.io/kubebuilder/pkg/plugin/v2/scaffolds/internal/templates/prometheus"
-	"sigs.k8s.io/kubebuilder/pkg/plugin/v2/scaffolds/internal/templates/webhook"
+	"sigs.k8s.io/kubebuilder/pkg/plugin/v2/scaffolds/templates"
+	"sigs.k8s.io/kubebuilder/pkg/plugin/v2/scaffolds/templates/certmanager"
+	"sigs.k8s.io/kubebuilder/pkg/plugin/v2/scaffolds/templates/manager"
+	"sigs.k8s.io/kubebuilder/pkg/plugin/v2/scaffolds/templates/metricsauth"
+	"sigs.k8s.io/kubebuilder/pkg/plugin/v2/scaffolds/templates/prometheus"
+	"sigs.k8s.io/kubebuilder/pkg/plugin/v2/scaffolds/templates/webhook"
 )
 
 const (

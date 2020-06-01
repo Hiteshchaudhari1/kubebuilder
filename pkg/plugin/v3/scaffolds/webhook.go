@@ -24,8 +24,8 @@ import (
 	"sigs.k8s.io/kubebuilder/pkg/model/resource"
 	"sigs.k8s.io/kubebuilder/pkg/plugin/internal/machinery"
 	"sigs.k8s.io/kubebuilder/pkg/plugin/scaffold"
-	"sigs.k8s.io/kubebuilder/pkg/plugin/v2/scaffolds/templates"
 	"sigs.k8s.io/kubebuilder/pkg/plugin/v2/scaffolds/templates/webhook"
+	templatesv3 "sigs.k8s.io/kubebuilder/pkg/plugin/v3/scaffolds/templates"
 )
 
 var _ scaffold.Scaffolder = &webhookScaffolder{}
@@ -63,7 +63,7 @@ func (s *webhookScaffolder) Scaffold() error {
 	fmt.Println("Writing scaffold for you to edit...")
 
 	switch {
-	case s.config.IsV2():
+	case s.config.IsV3():
 		return s.scaffold()
 	default:
 		return fmt.Errorf("unknown project version %v", s.config.Version)
@@ -87,7 +87,7 @@ You need to implement the conversion.Hub and conversion.Convertible interfaces f
 	if err := machinery.NewScaffold().Execute(
 		s.newUniverse(),
 		&webhook.Webhook{Defaulting: s.defaulting, Validating: s.validation},
-		&templates.MainUpdater{WireWebhook: true},
+		&templatesv3.MainUpdater{WireWebhook: true},
 	); err != nil {
 		return err
 	}
