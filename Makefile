@@ -20,6 +20,13 @@
 export GOPROXY?=https://proxy.golang.org/
 CONTROLLER_GEN_BIN_PATH := $(shell which controller-gen)
 
+# Get the currently used golang install path (in GOPATH/bin, unless GOBIN is set)
+ifeq (,$(shell go env GOBIN))
+GOBIN=$(shell go env GOPATH)/bin
+else
+GOBIN=$(shell go env GOBIN)
+endif
+
 ##@ General
 
 # The help will print out all targets with their descriptions organized bellow their categories. The categories are represented by `##@` and the target descriptions by `##`.
@@ -45,41 +52,28 @@ install: ## Build and install the binary with the current source code. Use it to
 
 .PHONY: generate
 generate: ## Update/generate all mock data. You should run this commands to update the mock data after your changes.
-	make generate-setup
+    # If exists, rremove the controller-gen installed locally. It ensures that the version which will be used
+    # is the version defined in the Makefile scaffolded.
+	- rm -rf $(CONTROLLER_GEN_BIN_PATH)
 	make generate-testdata
 	go mod tidy
 
 .PHONY: generate-testdata
 generate-testdata: ## Update/generate the testdata in $GOPATH/src/sigs.k8s.io/kubebuilder
-	GO111MODULE=on ./generate_golden.sh
-
-.PHONY: generate-vendor
-generate-vendor: ## (Deprecated) Update/generate the vendor by using the path $GOPATH/src/sigs.k8s.io/kubebuilder-test
-	GO111MODULE=off ./generate_vendor.sh
-
-.PHONY: generate-setup
-generate-setup: ## Current workarround to generate the testdata with the correct controller-gen version
-	- rm -rf $(CONTROLLER_GEN_BIN_PATH)
-	- GO111MODULE=on go get sigs.k8s.io/controller-tools/cmd/controller-gen@v0.2.5
-
+	GO111MODULE=on ./generate_testdata.sh
 .PHONY: lint
 lint: ## Run code lint checks
 	./scripts/verify.sh
 
 ##@ Tests
 
-.PHONY: test
-test: ## Run the go tests ($ go test -v ./cmd/... ./pkg/...)
+.PHONY: go-test
+go-test: ## Run the go tests ($ go test -v ./cmd/... ./pkg/...)
 	go test -v ./cmd/... ./pkg/...
 
-.PHONY: test-ci
-test-ci: ## Run the unit tests (used in the CI)
-	./setup.sh
+.PHONY: test
+test: ## Run the unit tests (used in the CI)
 	./test.sh
-
-.PHONY: test-e2e
-test-e2e: ## Run the integration tests (used in the CI)
-	./test_e2e.sh
 
 .PHONY: test-coverage
 test-coverage:  ## Run coveralls
@@ -87,3 +81,7 @@ test-coverage:  ## Run coveralls
 	- rm -rf *.out
 	# run the go tests and gen the file coverage-all used to do the integration with coverrals.io
 	go test -failfast -tags=integration -coverprofile=coverage-all.out -covermode=count ./pkg/... ./cmd/...
+
+.PHONY: check-testdata
+check-testdata: ## Run the script to ensure that the testdata is updated
+	./check_testdata.sh

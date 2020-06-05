@@ -33,10 +33,10 @@ import (
 
 var _ = Describe("kubebuilder", func() {
 	Context("with v2 scaffolding", func() {
-		var kbc *utils.KBTestContext
+		var kbc *utils.TestContext
 		BeforeEach(func() {
 			var err error
-			kbc, err = utils.TestContext("GO111MODULE=on")
+			kbc, err = utils.NewTestContext(utils.KubebuilderBinName, "GO111MODULE=on")
 			Expect(err).NotTo(HaveOccurred())
 			Expect(kbc.Prepare()).To(Succeed())
 
@@ -67,7 +67,7 @@ var _ = Describe("kubebuilder", func() {
 			err := kbc.Init(
 				"--project-version", "2",
 				"--domain", kbc.Domain,
-				"--dep=false")
+				"--fetch-deps=false")
 			Expect(err).Should(Succeed())
 
 			By("creating api definition")
@@ -196,7 +196,7 @@ var _ = Describe("kubebuilder", func() {
 
 			By("granting permissions to access the metrics and read the token")
 			_, err = kbc.Kubectl.Command(
-				"create", "clusterrolebinding", "metrics",
+				"create", "clusterrolebinding", fmt.Sprintf("metrics-%s", kbc.TestSuffix),
 				fmt.Sprintf("--clusterrole=e2e-%s-metrics-reader", kbc.TestSuffix),
 				fmt.Sprintf("--serviceaccount=%s:default", kbc.Kubectl.Namespace))
 			Expect(err).NotTo(HaveOccurred())

@@ -23,16 +23,14 @@ export TRACE=1
 export GO111MODULE=on
 
 fetch_tools
-# This test is used by prow and if the dep not be installed by git then it will face the GOBIN issue.
-install_dep_by_git
 install_kind
 build_kb
 
 setup_envs
 
 source "$(pwd)/scripts/setup.sh" ${KIND_K8S_VERSION}
-docker pull gcr.io/kubebuilder/kube-rbac-proxy:v0.4.1
-kind load docker-image gcr.io/kubebuilder/kube-rbac-proxy:v0.4.1
+docker pull gcr.io/kubebuilder/kube-rbac-proxy:v0.5.0
+kind load docker-image gcr.io/kubebuilder/kube-rbac-proxy:v0.5.0
 
 # remove running containers on exit
 function cleanup() {
@@ -40,7 +38,5 @@ function cleanup() {
 }
 
 trap cleanup EXIT
-
-# The v1 is deprecated
-go test ./test/e2e/v1
 go test ./test/e2e/v2
+go test ./test/e2e/v3
